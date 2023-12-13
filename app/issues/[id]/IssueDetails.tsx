@@ -2,6 +2,7 @@ import { IssueStatusBadge } from "@/app/components";
 import { Issue } from "@prisma/client";
 import { Card, Flex, Heading, Text } from "@radix-ui/themes";
 import ReactMarkdown from "react-markdown";
+import prisma from "@/prisma/client";
 
 const IssueDetails = ({ issue }: { issue: Issue }) => {
   return (
@@ -17,5 +18,18 @@ const IssueDetails = ({ issue }: { issue: Issue }) => {
     </>
   );
 };
+
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  const issue = await prisma.issue.findUnique({
+    where: {
+      id: parseInt(params.id),
+    },
+  });
+
+  return {
+    title: issue?.title,
+    description: "Details of issue" + issue?.id,
+  };
+}
 
 export default IssueDetails;
